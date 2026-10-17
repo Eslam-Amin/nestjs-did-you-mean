@@ -100,3 +100,30 @@ export function jaroSimilarity(s1: string, s2: string): number {
   const halfTranspositions = transpositions / 2;
   return (matches / len1 + matches / len2 + (matches - halfTranspositions) / matches) / 3;
 }
+
+/**
+ * Calculates the Jaro-Winkler similarity between two strings (0.0 to 1.0),
+ * giving higher weight to strings with a common prefix.
+ */
+export function jaroWinklerSimilarity(
+  s1: string,
+  s2: string,
+  prefixScale = 0.1,
+  maxPrefixLength = 4,
+): number {
+  const jaro = jaroSimilarity(s1, s2);
+  if (jaro === 0 || jaro === 1.0) return jaro;
+
+  // Find common prefix length (up to maxPrefixLength)
+  let prefix = 0;
+  const max = Math.min(s1.length, s2.length, maxPrefixLength);
+  for (let i = 0; i < max; i++) {
+    if (s1[i] === s2[i]) {
+      prefix++;
+    } else {
+      break;
+    }
+  }
+
+  return Math.min(1.0, jaro + prefix * prefixScale * (1 - jaro));
+}
