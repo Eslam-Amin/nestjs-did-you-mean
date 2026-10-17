@@ -91,3 +91,46 @@ export function isExactPathMatch(targetPath: string, candidatePath: string): boo
 
   return true;
 }
+
+/**
+ * Calculates structural segment similarity between target and candidate route paths.
+ * Accounts for parameterized segments and path hierarchy.
+ */
+export function calculateStructuralSimilarity(
+  targetSegments: string[],
+  candidateSegments: string[],
+): number {
+  if (targetSegments.length === 0 && candidateSegments.length === 0) {
+    return 1.0;
+  }
+
+  const maxLen = Math.max(targetSegments.length, candidateSegments.length);
+  if (maxLen === 0) return 1.0;
+
+  let totalScore = 0;
+
+  for (let i = 0; i < maxLen; i++) {
+    const tSeg = targetSegments[i];
+    const cSeg = candidateSegments[i];
+
+    if (!tSeg || !cSeg) {
+      // Segment count mismatch penalty for this index
+      continue;
+    }
+
+    if (isParamToken(cSeg)) {
+      // Parameter token matches any target segment with high confidence
+      totalScore += 0.95;
+    } else {
+      const lev = normalizedLevenshtein(tSeg.toLowerCase(), cSeg.toLowerCase());
+      const jaro = jaroWinklerSimilarity(tSeg.toLowerCase(), cSeg.toLowerCase());
+      totalScore += 0.4 * lev + 0.6 * jaro;
+    }
+  }
+
+  // Length ratio penalty
+  const lengthPenalty = Math.min(targetSegments.length, candidateSegments.length) / maxLen;
+  const rawScore = totalScore / maxLen;
+
+  return Math.min(1.0, rawScore * (0.8 + 0.2 * lengthPenalty));
+}
