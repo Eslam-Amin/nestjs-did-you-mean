@@ -42,3 +42,14 @@ export function levenshteinDistance(a: string, b: string): number {
 
   return prevRow[aLen];
 }
+
+/**
+ * Calculates normalized Levenshtein similarity score between 0.0 and 1.0.
+ */
+export function normalizedLevenshtein(a: string, b: string): number {
+  if (a === b) return 1.0;
+  const maxLen = Math.max(a.length, b.length);
+  if (maxLen === 0) return 1.0;
+  const distance = levenshteinDistance(a, b);
+  return Math.max(0, 1 - distance / maxLen);
+}
