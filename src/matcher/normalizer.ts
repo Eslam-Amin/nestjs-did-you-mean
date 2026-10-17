@@ -55,3 +55,39 @@ export function normalizeRoutePattern(path: string): string {
   const normalizedSegments = segments.map((seg) => (isParamToken(seg) ? ':param' : seg));
   return '/' + normalizedSegments.join('/');
 }
+
+/**
+ * Determines whether a target path matches a candidate route template structurally.
+ * (e.g. '/api/users/42' matches '/api/users/:id').
+ */
+export function isExactPathMatch(targetPath: string, candidatePath: string): boolean {
+  const targetClean = cleanPath(targetPath);
+  const candidateClean = cleanPath(candidatePath);
+
+  if (targetClean === candidateClean) {
+    return true;
+  }
+
+  const targetSegs = splitSegments(targetClean);
+  const candidateSegs = splitSegments(candidateClean);
+
+  if (targetSegs.length !== candidateSegs.length) {
+    return false;
+  }
+
+  for (let i = 0; i < targetSegs.length; i++) {
+    const cSeg = candidateSegs[i];
+    const tSeg = targetSegs[i];
+
+    if (isParamToken(cSeg)) {
+      // Dynamic parameter in candidate matches any target segment
+      continue;
+    }
+
+    if (cSeg.toLowerCase() !== tSeg.toLowerCase()) {
+      return false;
+    }
+  }
+
+  return true;
+}
