@@ -46,3 +46,12 @@ export function splitSegments(path: string): string[] {
     .split('/')
     .filter(Boolean);
 }
+
+/**
+ * Normalizes route parameter tokens (:id, {id}, *wildcard) to a uniform ':param'.
+ */
+export function normalizeRoutePattern(path: string): string {
+  const segments = splitSegments(path);
+  const normalizedSegments = segments.map((seg) => (isParamToken(seg) ? ':param' : seg));
+  return '/' + normalizedSegments.join('/');
+}
