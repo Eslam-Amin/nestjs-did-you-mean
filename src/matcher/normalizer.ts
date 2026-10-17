@@ -37,3 +37,12 @@ export function cleanPath(rawUrl: string): string {
 
   return cleaned;
 }
+
+/**
+ * Splits a path into non-empty segments.
+ */
+export function splitSegments(path: string): string[] {
+  return cleanPath(path)
+    .split('/')
+    .filter(Boolean);
+}
