@@ -257,3 +257,53 @@ export function formatHtmlResponse(context: FormatContext): string {
 </body>
 </html>`;
 }
+
+/**
+ * Resolves content type and response body based on options and request headers.
+ */
+export function resolveFormattedResponse(
+  context: FormatContext,
+  formatOption: DidYouMeanModuleOptions['format'] = 'auto',
+): { contentType: string; body: any } {
+  if (typeof formatOption === 'function') {
+    const customResult = formatOption(context);
+    const isHtml =
+      typeof customResult === 'string' &&
+      (customResult.trim().startsWith('<!DOCTYPE') || customResult.trim().startsWith('<html'));
+    return {
+      contentType: isHtml ? 'text/html; charset=utf-8' : 'application/json; charset=utf-8',
+      body: customResult,
+    };
+  }
+
+  if (formatOption === 'html') {
+    return {
+      contentType: 'text/html; charset=utf-8',
+      body: formatHtmlResponse(context),
+    };
+  }
+
+  if (formatOption === 'json') {
+    return {
+      contentType: 'application/json; charset=utf-8',
+      body: formatJsonResponse(context),
+    };
+  }
+
+  // 'auto': Content negotiation based on Accept header
+  const req = context.req;
+  const acceptHeader =
+    req?.headers?.accept || req?.headers?.['accept'] || (typeof req?.get === 'function' ? req.get('accept') : '');
+
+  if (typeof acceptHeader === 'string' && acceptHeader.includes('text/html') && !acceptHeader.includes('application/json')) {
+    return {
+      contentType: 'text/html; charset=utf-8',
+      body: formatHtmlResponse(context),
+    };
+  }
+
+  return {
+    contentType: 'application/json; charset=utf-8',
+    body: formatJsonResponse(context),
+  };
+}
