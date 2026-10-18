@@ -9,10 +9,16 @@ import type {
   DidYouMeanOptionsFactory,
 } from './types';
 
+/**
+ * Dynamic module providing automatic 404 route suggestion capabilities.
+ */
 @Module({})
 export class DidYouMeanModule {
   /**
    * Registers the DidYouMeanModule synchronously.
+   *
+   * @param options - Configuration options for the module, matcher, and filter.
+   * @returns Configured DynamicModule instance.
    */
   static forRoot(options: DidYouMeanModuleOptions = {}): DynamicModule {
     const isGlobal = options.isGlobalFilter !== false;
@@ -42,7 +48,10 @@ export class DidYouMeanModule {
   }
 
   /**
-   * Registers the DidYouMeanModule asynchronously.
+   * Registers the DidYouMeanModule asynchronously using factory providers or existing services.
+   *
+   * @param asyncOptions - Asynchronous provider configuration options.
+   * @returns Configured DynamicModule instance.
    */
   static forRootAsync(asyncOptions: DidYouMeanModuleAsyncOptions): DynamicModule {
     const asyncProviders = this.createAsyncProviders(asyncOptions);
