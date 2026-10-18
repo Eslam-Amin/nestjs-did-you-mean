@@ -9,16 +9,23 @@ import {
 import { jaroWinklerSimilarity, normalizedLevenshtein } from './similarity';
 
 /**
- * Endpoint target being requested.
+ * Endpoint target being requested by a client.
  */
 export interface EndpointTarget {
+  /** HTTP method of the incoming request (e.g., 'GET', 'POST') */
   method: string;
+  /** Requested URL path */
   path: string;
 }
 
 /**
- * Calculates similarity between a requested endpoint and registered candidates,
- * ranking them with method mismatch prioritization and structural matching.
+ * Calculates similarity between a requested endpoint and registered candidate routes,
+ * ranking them with method mismatch prioritization, structural matching, and threshold filtering.
+ *
+ * @param target - The requested HTTP method and path.
+ * @param candidates - List of harvested application route definitions.
+ * @param options - Configuration options controlling threshold, limits, and scoring.
+ * @returns Sorted list of closest matching route suggestions.
  */
 export function rankSuggestions(
   target: EndpointTarget,
