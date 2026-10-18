@@ -1,5 +1,9 @@
 /**
  * Calculates the Levenshtein distance between two strings using O(min(m, n)) space.
+ *
+ * @param a - First input string.
+ * @param b - Second input string.
+ * @returns The minimum number of single-character edits (insertions, deletions, substitutions) required to change `a` into `b`.
  */
 export function levenshteinDistance(a: string, b: string): number {
   if (a === b) return 0;
@@ -45,6 +49,10 @@ export function levenshteinDistance(a: string, b: string): number {
 
 /**
  * Calculates normalized Levenshtein similarity score between 0.0 and 1.0.
+ *
+ * @param a - First input string.
+ * @param b - Second input string.
+ * @returns Similarity score where 1.0 represents an exact match and 0.0 represents complete dissimilarity.
  */
 export function normalizedLevenshtein(a: string, b: string): number {
   if (a === b) return 1.0;
@@ -56,6 +64,10 @@ export function normalizedLevenshtein(a: string, b: string): number {
 
 /**
  * Calculates the Jaro similarity between two strings (0.0 to 1.0).
+ *
+ * @param s1 - First input string.
+ * @param s2 - Second input string.
+ * @returns Jaro similarity score between 0.0 (no match) and 1.0 (exact match).
  */
 export function jaroSimilarity(s1: string, s2: string): number {
   if (s1 === s2) return 1.0;
@@ -103,7 +115,13 @@ export function jaroSimilarity(s1: string, s2: string): number {
 
 /**
  * Calculates the Jaro-Winkler similarity between two strings (0.0 to 1.0),
- * giving higher weight to strings with a common prefix.
+ * giving higher weight to strings sharing a common prefix.
+ *
+ * @param s1 - First input string.
+ * @param s2 - Second input string.
+ * @param prefixScale - Scaling factor for prefix bonus (default: 0.1).
+ * @param maxPrefixLength - Maximum prefix length to consider (default: 4).
+ * @returns Jaro-Winkler similarity score between 0.0 and 1.0.
  */
 export function jaroWinklerSimilarity(
   s1: string,
