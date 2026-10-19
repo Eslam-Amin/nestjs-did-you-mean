@@ -4,3 +4,19 @@ coverage
 .nyc_output
 *.log
 .DS_Store
+
+# AI assistant instructions & operational guidelines
+agent.md
+agents.md
+AGENT.md
+AGENTS.md
+gemini.md
+GEMINI.md
+.github/copilot-instructions.md
+copilot-instructions.md
+.cursorrules
+.cursor/
+.windsurfrules
+.clinerules
+.gemini/
+.antigravity/

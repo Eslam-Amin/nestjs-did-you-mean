@@ -1,7 +1,10 @@
 import { jaroWinklerSimilarity, normalizedLevenshtein } from './similarity';
 
 /**
- * Checks whether a URL segment represents a route parameter (:param, {param}, or *wildcard).
+ * Checks whether a URL segment represents a route parameter (`:param`, `{param}`, or `*wildcard`).
+ *
+ * @param segment - The single path segment string to check.
+ * @returns `true` if the segment represents a dynamic parameter token; otherwise `false`.
  */
 export function isParamToken(segment: string): boolean {
   if (!segment) return false;
@@ -13,8 +16,11 @@ export function isParamToken(segment: string): boolean {
 }
 
 /**
- * Cleans a URL path by removing query string, hash, collapsing redundant slashes,
- * and normalizing leading/trailing slashes.
+ * Cleans a URL path by removing query strings, fragments, collapsing redundant slashes,
+ * and normalizing leading and trailing slashes.
+ *
+ * @param rawUrl - Raw requested URL string.
+ * @returns Normalized URL path with leading slash and without query parameters or trailing slashes.
  */
 export function cleanPath(rawUrl: string): string {
   if (!rawUrl) return '/';
@@ -39,7 +45,10 @@ export function cleanPath(rawUrl: string): string {
 }
 
 /**
- * Splits a path into non-empty segments.
+ * Splits a normalized URL path into non-empty segment strings.
+ *
+ * @param path - The URL path to segment.
+ * @returns Array of individual path segment strings.
  */
 export function splitSegments(path: string): string[] {
   return cleanPath(path)
@@ -48,7 +57,10 @@ export function splitSegments(path: string): string[] {
 }
 
 /**
- * Normalizes route parameter tokens (:id, {id}, *wildcard) to a uniform ':param'.
+ * Normalizes route parameter tokens (`:id`, `{id}`, `*wildcard`) to a uniform `:param` token.
+ *
+ * @param path - The route path template to normalize.
+ * @returns Uniform route pattern string where parameter tokens are mapped to `:param`.
  */
 export function normalizeRoutePattern(path: string): string {
   const segments = splitSegments(path);
@@ -57,8 +69,12 @@ export function normalizeRoutePattern(path: string): string {
 }
 
 /**
- * Determines whether a target path matches a candidate route template structurally.
- * (e.g. '/api/users/42' matches '/api/users/:id').
+ * Determines whether a target path matches a candidate route template structurally
+ * (e.g., `/api/users/42` matches candidate `/api/users/:id`).
+ *
+ * @param targetPath - The concrete requested URL path.
+ * @param candidatePath - The candidate registered route template.
+ * @returns `true` if the target matches the candidate structure; otherwise `false`.
  */
 export function isExactPathMatch(targetPath: string, candidatePath: string): boolean {
   const targetClean = cleanPath(targetPath);
@@ -93,8 +109,12 @@ export function isExactPathMatch(targetPath: string, candidatePath: string): boo
 }
 
 /**
- * Calculates structural segment similarity between target and candidate route paths.
- * Accounts for parameterized segments and path hierarchy.
+ * Calculates structural segment similarity between target and candidate route paths,
+ * accounting for parameterized dynamic segments and path depth hierarchy.
+ *
+ * @param targetSegments - Segments of the requested path.
+ * @param candidateSegments - Segments of the candidate registered route.
+ * @returns Structural similarity score between 0.0 and 1.0.
  */
 export function calculateStructuralSimilarity(
   targetSegments: string[],

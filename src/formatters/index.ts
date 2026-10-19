@@ -6,6 +6,9 @@ import type {
 
 /**
  * Formats suggestions into the standard JSON error payload.
+ *
+ * @param context - The formatting context containing request details and suggestions.
+ * @returns Standard 404 response payload including suggestions array.
  */
 export function formatJsonResponse(context: FormatContext): DidYouMeanResponsePayload {
   return {
@@ -37,6 +40,9 @@ function escapeHtml(text: string): string {
 
 /**
  * Formats suggestions into a clean, interactive developer HTML page.
+ *
+ * @param context - The formatting context containing request details and suggestions.
+ * @returns Rendered HTML document string.
  */
 export function formatHtmlResponse(context: FormatContext): string {
   const suggestionsHtml = context.suggestions
@@ -260,6 +266,10 @@ export function formatHtmlResponse(context: FormatContext): string {
 
 /**
  * Resolves content type and response body based on options and request headers.
+ *
+ * @param context - The formatting context containing request details and suggestions.
+ * @param formatOption - Response format strategy ('auto', 'json', 'html', or custom function).
+ * @returns Object containing the Content-Type header string and the response body.
  */
 export function resolveFormattedResponse(
   context: FormatContext,

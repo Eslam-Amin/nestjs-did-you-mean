@@ -15,6 +15,11 @@ import { cleanPath } from './matcher/normalizer';
 import { rankSuggestions } from './matcher/ranker';
 import type { DidYouMeanModuleOptions, FormatContext } from './types';
 
+/**
+ * Global NestJS ExceptionFilter that intercepts `NotFoundException` (404) errors
+ * and appends closest matching endpoint suggestions based on fuzzy string matching
+ * and parameterized route token analysis.
+ */
 @Injectable()
 @Catch(NotFoundException)
 export class DidYouMeanFilter implements ExceptionFilter<NotFoundException> {
@@ -22,6 +27,13 @@ export class DidYouMeanFilter implements ExceptionFilter<NotFoundException> {
   private readonly httpAdapterHost?: HttpAdapterHost;
   private readonly discoveryService?: RouteDiscoveryService;
 
+  /**
+   * Initializes the DidYouMeanFilter with optional DI or manual instantiation arguments.
+   *
+   * @param httpAdapterHost - NestJS HttpAdapterHost used for platform-agnostic request/response manipulation.
+   * @param discoveryService - RouteDiscoveryService providing cached candidate route definitions.
+   * @param options - Module configuration options.
+   */
   constructor(
     @Optional()
     httpAdapterHost?: HttpAdapterHost,
@@ -95,6 +107,13 @@ export class DidYouMeanFilter implements ExceptionFilter<NotFoundException> {
     return process.env.NODE_ENV !== 'production';
   }
 
+  /**
+   * Catches `NotFoundException`, evaluates closest route suggestions, and replies with formatted JSON or HTML.
+   * In disabled environments or production, delegates immediately without reflection or matching overhead.
+   *
+   * @param exception - The intercepted NotFoundException.
+   * @param host - ArgumentsHost providing HTTP context access.
+   */
   catch(exception: NotFoundException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const req = ctx.getRequest();

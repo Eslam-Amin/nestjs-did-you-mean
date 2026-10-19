@@ -2,7 +2,15 @@
   "name": "nestjs-did-you-mean",
   "version": "1.0.0",
   "description": "Production-ready, zero-dependency 404 Route Suggester for NestJS with Express and Fastify support",
-  "author": "Antigravity",
+  "author": "Eslam Amin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eslam-Amin/nestjs-did-you-mean.git"
+  },
+  "homepage": "https://github.com/Eslam-Amin/nestjs-did-you-mean#readme",
+  "bugs": {
+    "url": "https://github.com/Eslam-Amin/nestjs-did-you-mean/issues"
+  },
   "license": "MIT",
   "keywords": [
     "nestjs",

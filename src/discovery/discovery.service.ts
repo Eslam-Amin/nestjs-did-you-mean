@@ -38,6 +38,12 @@ const METHOD_NAME_MAP: Record<number | string, string> = {
   SEARCH: 'SEARCH',
 };
 
+/**
+ * Service responsible for discovering and caching all registered application routes.
+ * Employs a two-tier harvesting strategy:
+ * 1. Priority 1: `@nestjs/swagger` OpenAPI specification.
+ * 2. Priority 2: Direct reflection over registered NestJS controllers, decorators, global prefixes, and versioning.
+ */
 @Injectable()
 export class RouteDiscoveryService implements OnModuleInit, OnApplicationBootstrap {
   private cachedRoutes: RouteDefinition[] = [];
@@ -52,17 +58,24 @@ export class RouteDiscoveryService implements OnModuleInit, OnApplicationBootstr
     private readonly options: DidYouMeanModuleOptions = {},
   ) {}
 
+  /**
+   * NestJS lifecycle hook: runs route discovery on module initialization.
+   */
   onModuleInit(): void {
     this.refreshRoutes();
   }
 
+  /**
+   * NestJS lifecycle hook: re-harvests routes once the application bootstrap is complete.
+   */
   onApplicationBootstrap(): void {
-    // Re-harvest on bootstrap in case routes were registered or Swagger generated after module init
     this.refreshRoutes();
   }
 
   /**
    * Returns currently cached route definitions.
+   *
+   * @returns Array of cached RouteDefinition objects.
    */
   getRoutes(): RouteDefinition[] {
     return this.cachedRoutes;
@@ -70,6 +83,8 @@ export class RouteDiscoveryService implements OnModuleInit, OnApplicationBootstr
 
   /**
    * Dynamically sets or updates the Swagger OpenAPI document and refreshes routes.
+   *
+   * @param swaggerDoc - Parsed OpenAPI 3.0 / Swagger document.
    */
   setSwaggerDoc(swaggerDoc: any): void {
     this.options.swaggerDoc = swaggerDoc;
@@ -78,6 +93,8 @@ export class RouteDiscoveryService implements OnModuleInit, OnApplicationBootstr
 
   /**
    * Scans and rebuilds route cache from Swagger doc or controller discovery.
+   *
+   * @returns Updated array of cached RouteDefinition objects.
    */
   refreshRoutes(): RouteDefinition[] {
     // Priority 1: @nestjs/swagger OpenAPI document
