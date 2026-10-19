@@ -1,6 +1,6 @@
 {
   "name": "nestjs-did-you-mean",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Production-ready, zero-dependency 404 Route Suggester for NestJS with Express and Fastify support",
   "author": "Eslam Amin",
   "repository": {

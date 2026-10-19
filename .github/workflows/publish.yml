@@ -22,7 +22,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Install Dependencies
         run: npm ci
@@ -36,7 +35,6 @@ jobs:
       - name: Build Dual Bundles (CJS & ESM)
         run: npm run build
 
-      - name: Publish to NPM Registry
+      - name: Publish to NPM via Trusted Publishing (OIDC)
         run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
