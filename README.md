@@ -1,4 +1,4 @@
-# nestjs-did-you-mean 🧭
+# nestjs-did-you-mean
 
 > Production-ready, **zero-dependency** 404 Route Suggester for NestJS with seamless **Express** & **Fastify** support, OpenAPI/Swagger harvesting, parameterized segment matching, and HTTP method mismatch prioritization.
 
@@ -11,29 +11,29 @@
 
 ---
 
-## ✨ Features
+## Features
 
-- ⚡ **Zero Runtime Dependencies** — Pure TypeScript string similarity algorithms; uses only standard Node.js and NestJS peer dependencies.
-- 🌐 **Platform-Agnostic** — Built upon NestJS `HttpAdapterHost`, running identically on `@nestjs/platform-express` and `@nestjs/platform-fastify`.
-- 🔍 **Dual Route Discovery Engine**:
+- **Zero Runtime Dependencies** — Pure TypeScript string similarity algorithms; uses only standard Node.js and NestJS peer dependencies.
+- **Platform-Agnostic** — Built upon NestJS `HttpAdapterHost`, running identically on `@nestjs/platform-express` and `@nestjs/platform-fastify`.
+- **Dual Route Discovery Engine**:
   - **Priority 1 (OpenAPI / Swagger Spec)**: Parses paths, HTTP methods, summaries, and operation IDs directly from `@nestjs/swagger`.
   - **Priority 2 (NestJS Discovery & Reflector)**: Introspects registered controllers, route decorators, global prefixes (`app.setGlobalPrefix('api')`), and URI versioning (`@Version('1')`).
-- 🎯 **Advanced Fuzzy Matching**:
+- **Advanced Fuzzy Matching**:
   - Combined **Normalized Levenshtein** distance + **Jaro-Winkler** similarity (prioritizing route prefixes).
   - **Segment-Based Structural Matching**: Recognizes parameterized tokens (`:id`, `{userId}`, dynamic segments), matching `/api/v1/users/42` against `/api/v1/users/:id` with high structural fidelity.
-- 🔀 **HTTP Method Mismatch Prioritization**:
+- **HTTP Method Mismatch Prioritization**:
   - If a requested route matches an existing path under a different HTTP verb (e.g., calling `POST /api/users` when only `GET /api/users` exists), it receives a `1.0` score with `isMethodMismatch: true` and is placed at the top of suggestions.
-- 🛡️ **Zero-Overhead Production Guardrails**:
+- **Zero-Overhead Production Guardrails**:
   - By default, active only in non-production environments (`process.env.NODE_ENV !== 'production'`).
   - In production, functions as an immediate transparent pass-through with **zero reflection, zero regex evaluation, and zero memory overhead**.
-- 🎨 **Multi-Format Output**:
+- **Multi-Format Output**:
   - **Standard JSON Payload** for API clients and tools (cURL, Postman).
   - **Interactive Developer HTML UI** automatically delivered when opening 404 URLs in a web browser (`Accept: text/html`), complete with method badges, match percentages, and one-click copy buttons.
-- 📦 **Dual Build**: Dual CommonJS (`.cjs`) and ECMAScript Module (`.js`) distribution with full `.d.ts` declaration maps.
+- **Dual Build**: Dual CommonJS (`.cjs`) and ECMAScript Module (`.js`) distribution with full `.d.ts` declaration maps.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```mermaid
 flowchart TD
@@ -73,7 +73,7 @@ flowchart TD
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 # npm
@@ -90,7 +90,7 @@ yarn add nestjs-did-you-mean
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Dynamic Module (`forRoot`)
 
@@ -208,7 +208,7 @@ async function bootstrap() {
 
 ---
 
-## ⚡ Output Formats
+## Output Formats
 
 ### 1. Standard JSON Response
 
@@ -261,14 +261,14 @@ When a route exists but was called with the wrong HTTP verb (e.g. client invoked
 
 Opening non-existent routes in a browser automatically yields a clean, responsive developer dashboard (respects dark & light OS themes):
 
-- 🎨 **Visual HTTP Method Badges** (Green `GET`, Blue `POST`, Yellow `PUT`, Red `DELETE`, Purple `PATCH`)
-- 📋 **One-Click Clipboard Copy**
-- 🔗 **Direct URL Navigation** for `GET` endpoints
-- 🎯 **Match Percentage Badges** or **Method Mismatch Pills**
+- **Visual HTTP Method Badges** (Green `GET`, Blue `POST`, Yellow `PUT`, Red `DELETE`, Purple `PATCH`)
+- **One-Click Clipboard Copy**
+- **Direct URL Navigation** for `GET` endpoints
+- **Match Percentage Badges** or **Method Mismatch Pills**
 
 ---
 
-## ⚙️ Configuration Options
+## Configuration Options
 
 | Option | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
@@ -286,7 +286,7 @@ Opening non-existent routes in a browser automatically yields a clean, responsiv
 
 ---
 
-## 🛡️ Production Safety & Performance
+## Production Safety & Performance
 
 In production environments, `nestjs-did-you-mean` operates with **zero overhead**:
 1. Checks the environment condition (`process.env.NODE_ENV !== 'production'` or `options.enabled`).
@@ -295,7 +295,7 @@ In production environments, `nestjs-did-you-mean` operates with **zero overhead*
 
 ---
 
-## 🧪 Testing
+## Testing
 
 The library is thoroughly tested with unit, integration, and E2E test suites on both **Express** and **Fastify** platforms with over **95% coverage**:
 
@@ -315,6 +315,6 @@ npm run build
 
 ---
 
-## 📄 License
+## License
 
-MIT License © 2026 Antigravity
+MIT License © 2026 Eslam Amin
