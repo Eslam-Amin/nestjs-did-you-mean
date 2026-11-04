@@ -98,17 +98,17 @@ Import `DidYouMeanModule` in your root `AppModule`. By default, it automatically
 
 ```typescript
 // app.module.ts
-import { Module } from '@nestjs/common';
-import { DidYouMeanModule } from 'nestjs-did-you-mean';
+import { Module } from "@nestjs/common";
+import { DidYouMeanModule } from "nestjs-did-you-mean";
 
 @Module({
   imports: [
     DidYouMeanModule.forRoot({
-      threshold: 0.4,       // Minimum similarity score (0.0 to 1.0)
-      maxSuggestions: 3,    // Limit returned suggestions
-      enabled: process.env.NODE_ENV !== 'production', // Active in dev/test
-    }),
-  ],
+      threshold: 0.4, // Minimum similarity score (0.0 to 1.0)
+      maxSuggestions: 3, // Limit returned suggestions
+      enabled: process.env.NODE_ENV !== "production" // Active in dev/test
+    })
+  ]
 })
 export class AppModule {}
 ```
@@ -119,21 +119,21 @@ If you use `@nestjs/swagger`, pass the generated document to enable route summar
 
 ```typescript
 // main.ts
-import { NestFactory } from '@nestjs/core';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { RouteDiscoveryService } from 'nestjs-did-you-mean';
-import { AppModule } from './app.module';
+import { NestFactory } from "@nestjs/core";
+import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
+import { RouteDiscoveryService } from "nestjs-did-you-mean";
+import { AppModule } from "./app.module";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('My API')
-    .setVersion('1.0')
+    .setTitle("My API")
+    .setVersion("1.0")
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
+  SwaggerModule.setup("docs", app, document);
 
   // Provide Swagger document to RouteDiscoveryService
   const discoveryService = app.get(RouteDiscoveryService);
@@ -148,17 +148,17 @@ Or pass `swaggerDoc` directly in module configuration:
 
 ```typescript
 DidYouMeanModule.forRoot({
-  swaggerDoc: swaggerDocument,
-})
+  swaggerDoc: swaggerDocument
+});
 ```
 
 ### 3. Asynchronous Configuration (`forRootAsync`)
 
 ```typescript
 // app.module.ts
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { DidYouMeanModule } from 'nestjs-did-you-mean';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { DidYouMeanModule } from "nestjs-did-you-mean";
 
 @Module({
   imports: [
@@ -167,12 +167,12 @@ import { DidYouMeanModule } from 'nestjs-did-you-mean';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        threshold: config.get<number>('SUGGESTION_THRESHOLD', 0.4),
-        maxSuggestions: config.get<number>('MAX_SUGGESTIONS', 3),
-        enabled: config.get<string>('NODE_ENV') !== 'production',
-      }),
-    }),
-  ],
+        threshold: config.get<number>("SUGGESTION_THRESHOLD", 0.4),
+        maxSuggestions: config.get<number>("MAX_SUGGESTIONS", 3),
+        enabled: config.get<string>("NODE_ENV") !== "production"
+      })
+    })
+  ]
 })
 export class AppModule {}
 ```
@@ -184,23 +184,25 @@ If you prefer to register the filter manually in `main.ts`:
 ```typescript
 // app.module.ts
 DidYouMeanModule.forRoot({
-  isGlobalFilter: false, // Disable automatic APP_FILTER provider
-})
+  isGlobalFilter: false // Disable automatic APP_FILTER provider
+});
 
 // main.ts
-import { HttpAdapterHost } from '@nestjs/core';
-import { DidYouMeanFilter, RouteDiscoveryService } from 'nestjs-did-you-mean';
+import { HttpAdapterHost } from "@nestjs/core";
+import { DidYouMeanFilter, RouteDiscoveryService } from "nestjs-did-you-mean";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   const httpAdapterHost = app.get(HttpAdapterHost);
   const discoveryService = app.get(RouteDiscoveryService);
 
-  app.useGlobalFilters(new DidYouMeanFilter(httpAdapterHost, discoveryService, {
-    maxSuggestions: 3,
-    threshold: 0.4,
-  }));
+  app.useGlobalFilters(
+    new DidYouMeanFilter(httpAdapterHost, discoveryService, {
+      maxSuggestions: 3,
+      threshold: 0.4
+    })
+  );
 
   await app.listen(3000);
 }
@@ -270,25 +272,26 @@ Opening non-existent routes in a browser automatically yields a clean, responsiv
 
 ## Configuration Options
 
-| Option | Type | Default | Description |
-| :--- | :--- | :--- | :--- |
-| `enabled` | `boolean \| ((req: any) => boolean)` | `process.env.NODE_ENV !== 'production'` | Enable/disable suggestions or provide a custom per-request predicate. |
-| `enabledEnvironments` | `string[]` | `undefined` | List of environments (e.g. `['development', 'test', 'staging']`) where suggestions are active. |
-| `threshold` | `number` | `0.4` | Minimum similarity score (0.0 to 1.0) required to include a candidate route. |
-| `maxSuggestions` | `number` | `3` | Maximum number of suggestions returned. |
-| `swaggerDoc` | `any` | `undefined` | OpenAPI 3.0 / Swagger 2.0 document from `SwaggerModule.createDocument`. |
-| `globalPrefix` | `string` | `undefined` | Global route prefix (auto-detected from NestJS application config if omitted). |
-| `excludePaths` | `(string \| RegExp)[]` | `[]` | Exclude matching paths from suggestions (e.g. internal routes, metrics). |
-| `format` | `'auto' \| 'json' \| 'html' \| ((ctx) => any)` | `'auto'` | Response format: `'auto'` content-negotiates based on `Accept` header. |
-| `includeMethodInScore` | `boolean` | `true` | Whether HTTP method compatibility factors into candidate ranking. |
-| `isGlobalFilter` | `boolean` | `true` | Automatically bind `DidYouMeanFilter` as a global `APP_FILTER`. |
-| `customRanker` | `Function` | `undefined` | Provide custom ranking and scoring algorithm. |
+| Option                 | Type                                           | Default                                 | Description                                                                                    |
+| :--------------------- | :--------------------------------------------- | :-------------------------------------- | :--------------------------------------------------------------------------------------------- |
+| `enabled`              | `boolean \| ((req: any) => boolean)`           | `process.env.NODE_ENV !== 'production'` | Enable/disable suggestions or provide a custom per-request predicate.                          |
+| `enabledEnvironments`  | `string[]`                                     | `undefined`                             | List of environments (e.g. `['development', 'test', 'staging']`) where suggestions are active. |
+| `threshold`            | `number`                                       | `0.4`                                   | Minimum similarity score (0.0 to 1.0) required to include a candidate route.                   |
+| `maxSuggestions`       | `number`                                       | `3`                                     | Maximum number of suggestions returned.                                                        |
+| `swaggerDoc`           | `any`                                          | `undefined`                             | OpenAPI 3.0 / Swagger 2.0 document from `SwaggerModule.createDocument`.                        |
+| `globalPrefix`         | `string`                                       | `undefined`                             | Global route prefix (auto-detected from NestJS application config if omitted).                 |
+| `excludePaths`         | `(string \| RegExp)[]`                         | `[]`                                    | Exclude matching paths from suggestions (e.g. internal routes, metrics).                       |
+| `format`               | `'auto' \| 'json' \| 'html' \| ((ctx) => any)` | `'auto'`                                | Response format: `'auto'` content-negotiates based on `Accept` header.                         |
+| `includeMethodInScore` | `boolean`                                      | `true`                                  | Whether HTTP method compatibility factors into candidate ranking.                              |
+| `isGlobalFilter`       | `boolean`                                      | `true`                                  | Automatically bind `DidYouMeanFilter` as a global `APP_FILTER`.                                |
+| `customRanker`         | `Function`                                     | `undefined`                             | Provide custom ranking and scoring algorithm.                                                  |
 
 ---
 
 ## Production Safety & Performance
 
 In production environments, `nestjs-did-you-mean` operates with **zero overhead**:
+
 1. Checks the environment condition (`process.env.NODE_ENV !== 'production'` or `options.enabled`).
 2. Immediately delegates to the default exception filter via `httpAdapter.reply(res, exception.getResponse(), 404)`.
 3. Skips reflection, route table iteration, string distance calculation, and template rendering entirely.
@@ -319,8 +322,4 @@ npm run build
 
 MIT License © 2026 Eslam Amin
 
-
 ---
-
-<!-- npm-recovery-claim: eslam-amin - 2026-10-31 -->
-<sub>npm-recovery-claim: eslam-amin - 2026-10-31</sub>
